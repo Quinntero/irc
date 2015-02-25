@@ -28,11 +28,15 @@ visibility: hidden;
 </style>
 <script language="JavaScript" type="text/javascript">
 function login(showhide){
-if(showhide == "show"){
+  if(showhide == "show"){   // trying to show vs. hide the right stuff if successful login
     document.getElementById('popupbox').style.visibility="visible";
-}else if(showhide == "hide"){
+    document.getElementById('logout').style.visibility="hidden";
+    document.getElementById('afterlogin').style.visibility="hidden";
+  }else if(showhide == "hide"){
     document.getElementById('popupbox').style.visibility="hidden"; 
-}
+    document.getElementById('logout').style.visibility="visible";
+    document.getElementById('afterlogin').style.visibility="visible";
+  }
 }
 
 
@@ -40,11 +44,15 @@ if(showhide == "show"){
         var socket = io.connect('https://' + document.domain + ':' + location.port + '/chat');
 
         //var socket = io.connect();
-
+        // trying to grab stuff from the console log
+        console.log("ChatController called", document.domain, location.port);
+        console.log("ChatController socket", socket);
+        
         $scope.messages = [];
         $scope.roster = [];
         $scope.name = '';
         $scope.text = '';
+        $scope.searches = [];
 
         socket.on('connect', function () {
           console.log('connected');
@@ -62,6 +70,14 @@ if(showhide == "show"){
           $scope.roster = names;
           $scope.$apply();
         });
+        
+        socket.on('searches', function (msg){
+          console.log(msg);
+          $scope.searches.push(msg);
+          $scope.$apply();
+          var searchText = document.getElementById('searchbox');
+          searchText.scrollTop = searchThread.scrollHeight;
+        })
 
         $scope.send = function send() {
           console.log('Sending message:', $scope.text);
@@ -83,6 +99,12 @@ if(showhide == "show"){
           console.log("Trying to log in");
           login('hide');
           socket.emit('login', $scope.password);
+        };
+        // added search function
+        $scope.search = function search(){
+          console.log('Searching for: ', $scope.text);
+          socket.emit('search', $scope.text);
+          $scope.text = '';
         };
 
 
