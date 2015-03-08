@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" ng-app>
   <head>
-    <title>Chat Example</title>
+    <title>Chatty</title> Chatty Room of Doom
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-responsive.min.css">
@@ -30,12 +30,12 @@ visibility: hidden;
 function login(showhide){
   if(showhide == "show"){   // trying to show vs. hide the right stuff if successful login
     document.getElementById('popupbox').style.visibility="visible";
-    document.getElementById('logout').style.visibility="hidden";
-    document.getElementById('afterlogin').style.visibility="hidden";
+    //document.getElementById('logout').style.visibility="hidden";
+    //document.getElementById('afterlogin').style.visibility="hidden";
   }else if(showhide == "hide"){
     document.getElementById('popupbox').style.visibility="hidden"; 
-    document.getElementById('logout').style.visibility="visible";
-    document.getElementById('afterlogin').style.visibility="visible";
+    //document.getElementById('logout').style.visibility="visible";
+   // document.getElementById('afterlogin').style.visibility="visible";
   }
 }
 
@@ -45,19 +45,21 @@ function login(showhide){
 
         //var socket = io.connect();
         // trying to grab stuff from the console log
-        console.log("ChatController called", document.domain, location.port);
-        console.log("ChatController socket", socket);
+        
+        //console.log("ChatController called", document.domain, location.port);
+        //console.log("ChatController socket", socket);
         
         $scope.messages = [];
         $scope.roster = [];
         $scope.name = '';
         $scope.text = '';
-        $scope.searches = [];
+        // $scope.searchfor = '';
+        // $scope.searchresults = [];
 
-        socket.on('connect', function () {
-          console.log('connected');
-          $scope.setName();
-        });
+         socket.on('connect', function () {
+           console.log('connected');
+           $scope.setName();
+         });
 
         socket.on('message', function (msg) {
           console.log(msg);
@@ -71,13 +73,13 @@ function login(showhide){
           $scope.$apply();
         });
         
-        socket.on('searches', function (msg){
-          console.log(msg);
-          $scope.searches.push(msg);
-          $scope.$apply();
-          var searchText = document.getElementById('searchbox');
-          searchText.scrollTop = searchThread.scrollHeight;
-        })
+        // socket.on('search', function (msg){
+        //   console.log(msg);
+        //   $scope.searchresults.push(msg);
+        //   $scope.$apply();
+        //   var searchText = document.getElementById('searchbox');
+        //   searchText.scrollTop = searchThread.scrollHeight;
+        // });
 
         $scope.send = function send() {
           console.log('Sending message:', $scope.text);
@@ -98,14 +100,15 @@ function login(showhide){
         $scope.processLogin = function processLogin() {
           console.log("Trying to log in");
           login('hide');
-          socket.emit('login', $scope.password);
+          //socket.emit('login', $scope.password);
+          socket.emit('login', {'username':$scope.name2, 'password':$scope.password});
         };
         // added search function
-        $scope.search = function search(){
-          console.log('Searching for: ', $scope.text);
-          socket.emit('search', $scope.text);
-          $scope.text = '';
-        };
+        // $scope.search = function search(){
+        //   console.log('Searching for: ', $scope.text);
+        //   socket.emit('search', $scope.text);
+        //   $scope.text = '';
+        // };
 
 
 

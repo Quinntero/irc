@@ -52,6 +52,16 @@ io.on('connection', function (socket) {
         messages.push(data);
       });
     });
+    
+    // added search stuff here, based on other ways text was handled
+    socket.on('search', function (search){
+      var text = String(search || '');
+      
+      if (!text)
+        return;
+      
+      socket.emit('search', text);
+    });
 
     socket.on('identify', function (name) {
       socket.set('name', String(name || 'Anonymous'), function (err) {
